@@ -245,15 +245,16 @@ int index_of_reverse(char *string, char *substring, int start) {
         if (start < 0) return -1;
     }
 
-    for (int i = 0; i < start; i++) {
-        if (p1 == s_bound) return -1;
+    // Last character has index s_len - 1
+    for (int i = 0; i < ((s_len - 1) - start); i++) {
+        if (p1 <= s_bound) return -1;
         p1--;
     }
 
     while (true) {
         if (p2 == b_bound) {
             if (pos == NULL) return -1;
-            else return (int)(pos - string);
+            else return (int)(pos - string - (b_len - 1));
         }
 
         if (p1 == s_bound) {

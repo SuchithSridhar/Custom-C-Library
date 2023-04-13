@@ -298,6 +298,84 @@ int main() {
         test_strings_equal(output, expected);
     }
 
+    printf("\n==== Testing index_of_reverse ====\n\n");
+    {
+        char *input, *substring;
+        int start, output, expected;
+
+        // Substring present at the beginning
+        input = "hello world";
+        substring = "hello";
+        start = -1;
+        expected = 0;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Substring present in the middle
+        input = "hello world";
+        substring = "lo w";
+        start = -1;
+        expected = 3;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Substring present at the end
+        input = "hello world";
+        substring = "world";
+        start = -1;
+        expected = 6;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Substring not present
+        input = "hello world";
+        substring = "foobar";
+        start = -1;
+        expected = -1;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Substring present multiple times
+        input = "hello world, world";
+        substring = "world";
+        start = -1;
+        expected = 13;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Positive start index
+        input = "hello world";
+        substring = "lo";
+        start = 5;
+        expected = 3;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Start index beyond the length of the string
+        input = "hello world";
+        substring = "lo";
+        start = 20;
+        expected = 3;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Negative start index (other than -1)
+        input = "hello world";
+        substring = "l";
+        start = -3;
+        expected = 3;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+
+        // Multiple occurrences of substring
+        input = "hello world, world!";
+        substring = "world";
+        start = -1;
+        expected = 13;
+        output = index_of_reverse(input, substring, start);
+        test_ints_equal(output, expected);
+    }
+
     printf("\n==== Testing to_uppercase ====\n\n");
     {
         char *input, *output, *expected;

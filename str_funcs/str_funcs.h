@@ -67,21 +67,27 @@ char* to_lowercase(char* string);
 
 /**
  * Get the index of a substring.
- * -1 if the substring is not present.
- *  @param string the source string to check in.
- *  @param substring the substring to look for.
- *  @param start the position to start at.
- *  @return the index of the substring or -1 if not present.
+ * The function returns -1 if the substring is not present.
+ * The value $start is position to start scanning, it can
+ * be either a positive index or a negative index.
+ * @param string the source string to check in.
+ * @param substring the substring to look for.
+ * @param start the position to start at.
+ * @return the index of the substring or -1 if not present.
  */
 int index_of(char *string, char *substring, int start);
 
 /**
- * Get the index of a substring starting from the end of the string.
- * -1 if the substring is not present.
- *  @param string the source string to check in.
- *  @param substring the substring to look for.
- *  @param start the position to start at and move left (-1 for end of string).
- *  @return the index of the substring or -1 if not present.
+ * Get the index of a substring scanning right to left.
+ * The index returned is the index of the first
+ * character of the substring in the source string.
+ * The function returns -1 if the substring is not present.
+ * The value $start is position to start scanning, it can
+ * be either a positive index or a negative index.
+ * @param string the source string to check in.
+ * @param substring the substring to look for.
+ * @param start the position to start at.
+ * @return the index of the substring or -1 if not present.
  */
 int index_of_reverse(char *string, char *substring, int start);
 
