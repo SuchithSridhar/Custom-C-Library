@@ -172,6 +172,15 @@ int index_of(char *string, char *substring, int start) {
         return 0;
     }
 
+    // Handle negative indices
+    if (start < 0) {
+        start = strlen(string) + start;
+        // Handle negative index out of bounds
+        if (start < 0) {
+            return -1;
+        }
+    }
+
     char *p1 = string;
     char *p2 = substring;
     char* pos = NULL;
@@ -208,8 +217,63 @@ int index_of(char *string, char *substring, int start) {
 }
 
 int index_of_reverse(char *string, char *substring, int start) {
-    // TODO: Complete function
-    return 0;
+
+    if (string == NULL || substring == NULL) {
+        return -1;
+    }
+
+    // If substring is empty
+    if (substring[0] == TERM) {
+        return 0;
+    }
+
+    int s_len = strlen(string);
+    int b_len = strlen(substring);
+    char *p1 = string + (s_len - 1);
+    char *p2 = substring + (b_len - 1);
+    char* pos = NULL;
+
+
+    // Break if ever p = bound
+    char *s_bound = string - 1;
+    char *b_bound = substring - 1;
+
+    // Negative indices
+    if (start < 0) {
+        start = start + s_len;
+        // Negative index out of bounds
+        if (start < 0) return -1;
+    }
+
+    for (int i = 0; i < start; i++) {
+        if (p1 == s_bound) return -1;
+        p1--;
+    }
+
+    while (true) {
+        if (p2 == b_bound) {
+            if (pos == NULL) return -1;
+            else return (int)(pos - string);
+        }
+
+        if (p1 == s_bound) {
+            return -1;
+        }
+
+        if (*p1 == *p2) {
+            if (pos == NULL) pos = p1;
+            p1--;
+            p2--;
+        } else if (pos != NULL){
+            p2 = substring + (b_len - 1);
+            p1 = pos - 1;
+            pos = NULL;
+        } else {
+            p1--;
+        }
+    }
+
+    return -1;
 }
 
 char** split_string(char *string, char *substring) {

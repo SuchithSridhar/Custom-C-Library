@@ -80,7 +80,7 @@ int index_of(char *string, char *substring, int start);
  * -1 if the substring is not present.
  *  @param string the source string to check in.
  *  @param substring the substring to look for.
- *  @param start the position to start at.
+ *  @param start the position to start at and move left (-1 for end of string).
  *  @return the index of the substring or -1 if not present.
  */
 int index_of_reverse(char *string, char *substring, int start);
