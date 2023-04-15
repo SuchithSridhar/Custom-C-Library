@@ -8,25 +8,44 @@
 #define TERM '\0'
 #define WHITESPACES " \n\t"
 
+
 /**
- * same as char_in_str but doesn't NULL perform checks
+ * Same as sf_char_in_str but does not perform checks.
  */
+bool _char_in_str(char *s, char c);
+
+/**
+ * Count the number of characters in the start
+ * that belong to a particular set of chars.
+ */
+int _count_char_start(char *s, char *chars);
+
+/**
+ * Count the number of characters in the end
+ * that belong to a particular set of chars 
+ * and get the length of the string.
+ */
+int _count_char_end_and_length(char *s, char *chars, int *length_dest);
+
+/**
+ * Convert a character to upper case.
+ */
+char _char_to_upper(char c);
+
+/**
+ * Convert a character to lower case.
+ */
+char _char_to_lower(char c);
+
 bool _char_in_str(char *s, char c) {
     int index = 0;
     while (s[index] != TERM) {
         if (s[index] == c) return true;
         index++;
     }
+
     return false;
 }
-
-bool char_in_str(char *string, char c) {
-    if (string == NULL) return false;
-    if (c == TERM) return true;
-
-    return _char_in_str(string, c);
-}
-
 
 int _count_char_start(char *s, char *chars) {
     int index = 0;
@@ -36,7 +55,6 @@ int _count_char_start(char *s, char *chars) {
     }
     return index;
 }
-
 
 /**
  * Count chars at the end and total length.
@@ -58,8 +76,25 @@ int _count_char_end_and_length(char *s, char *chars, int *length_dest) {
     return count;
 }
 
+char _char_to_upper(char c) {
+    if (c >= 'a' && c <= 'z') return c - 32;
+    else return c;
+}
 
-char* trim_chars(char *string, char *chars) {
+char _char_to_lower(char c) {
+    if (c >= 'A' && c <= 'Z') return c + 32;
+    else return c;
+}
+
+
+bool sf_char_in_str(char *string, char c) {
+    if (string == NULL) return false;
+    if (c == TERM) return true;
+
+    return _char_in_str(string, c);
+}
+
+char* sf_trim_chars(char *string, char *chars) {
     // Iterate over the string 2x to first
     // calculate the size of the new string
     // and then actually build it. This is
@@ -80,15 +115,15 @@ char* trim_chars(char *string, char *chars) {
     return new;
 }
 
-char* trim_whitespace(char *string) {
-    return trim_chars(string, WHITESPACES);
+char* sf_trim_whitespace(char *string) {
+    return sf_trim_chars(string, WHITESPACES);
 }
 
-bool is_substring(char* string, char *substring) {
-    return index_of(string, substring, 0) != -1;
+bool sf_is_substring(char* string, char *substring) {
+    return sf_index_of(string, substring, 0) != -1;
 }
 
-char* get_substring(char *string, int start, int end, int step) {
+char* sf_get_substring(char *string, int start, int end, int step) {
     if (string == NULL) return NULL;
 
     int length = strlen(string);
@@ -116,52 +151,42 @@ char* get_substring(char *string, int start, int end, int step) {
     return new_string;
 }
 
-char _char_to_upper(char c) {
-    if (c >= 'a' && c <= 'z') return c - 32;
-    else return c;
-}
-
-char _char_to_lower(char c) {
-    if (c >= 'A' && c <= 'Z') return c + 32;
-    else return c;
-}
-
-char* to_uppercase(char* string) {
+char* sf_duplicate_string(char *string) {
     if (string == NULL) return NULL;
 
     int length = strlen(string);
-
     char *new = malloc(sizeof(char) * (length + 1));
     if (new == NULL) return NULL;
 
-    for (int i = 0; i < length; i++) {
-        new[i] = _char_to_upper(string[i]);
+    for (int i=0; i<length; i++) {
+        new[i] = string[i];
     }
 
     new[length] = TERM;
-
     return new;
 }
 
-char* to_lowercase(char* string) {
-    if (string == NULL) return NULL;
+void sf_to_uppercase(char* string) {
+    if (string == NULL) return;
 
-    int length = strlen(string);
-
-    char *new = malloc(sizeof(char) * (length + 1));
-    if (new == NULL) return NULL;
-
-    for (int i = 0; i < length; i++) {
-        new[i] = _char_to_lower(string[i]);
+    char *ptr = string;
+    while (*ptr != TERM) {
+        *ptr = _char_to_upper(*ptr);
+        ptr++;
     }
-
-    new[length] = TERM;
-
-    return new;
 }
 
+void sf_to_lowercase(char* string) {
+    if (string == NULL) return;
 
-int index_of(char *string, char *substring, int start) {
+    char *ptr = string;
+    while (*ptr != TERM) {
+        *ptr = _char_to_lower(*ptr);
+        ptr++;
+    }
+}
+
+int sf_index_of(char *string, char *substring, int start) {
     
     if (string == NULL || substring == NULL) {
         return -1;
@@ -216,7 +241,7 @@ int index_of(char *string, char *substring, int start) {
     return -1;
 }
 
-int index_of_reverse(char *string, char *substring, int start) {
+int sf_index_of_reverse(char *string, char *substring, int start) {
 
     if (string == NULL || substring == NULL) {
         return -1;
@@ -277,16 +302,16 @@ int index_of_reverse(char *string, char *substring, int start) {
     return -1;
 }
 
-char** split_string(char *string, char *substring) {
+char** sf_split_string(char *string, char *substring) {
     // TODO: Complete function
     return NULL;
 }
 
-char** split_string_inplace(char *string, char *substring) {
+char** sf_split_string_inplace(char *string, char *substring) {
     // TODO: Complete function
     return NULL;
 }
 
-void free_split_string(char** split_array) {
+void sf_free_split_string(char** split_array) {
     // TODO: Complete function
 }

@@ -1,23 +1,25 @@
-#ifndef _STRING_FUNCTIONS_H
-#define _STRING_FUNCTIONS_H
+#ifndef _SF_STRING_FUNCTIONS_H
+#define _SF_STRING_FUNCTIONS_H
 
 #include <stdbool.h>
 
-
 /**
- * Remove a set of characters from the start
- * and end of a string. A new allocated string is returned.
- * @param string a string with all the character that are to be removed.
- * @return a new string allocated on the heap having trimmed $c.
+ * Remove a set of characters from the start and
+ * end of a string. A new allocated string is returned.
+ * @param string the string to trim.
+ * @param chars the set of characters to be trimmed as a string.
+ * @return a new string allocated on the heap having trimmed $chars.
  */
-char* trim_chars(char *string, char *chars);
+char *sf_trim_chars(char *string, char *chars);
 
 /**
  * Remove all white-space characters from the start
  * and end of a string. A new allocated string is retuned.
- * @return a new string allocated on the heap having trimmed $c.
+ * @param string the string to trim.
+ * @return a new string allocated on the heap having trimmed 
+ *         the white space characters.
  */
-char* trim_whitespace(char *string);
+char *sf_trim_whitespace(char *string);
 
 /**
  * Check if a given character is in a string.
@@ -25,16 +27,16 @@ char* trim_whitespace(char *string);
  * @param c the character to look for.
  * @return true if the character was found, else false.
  */
-bool char_in_str(char* string, char c);
+bool sf_char_in_str(char *string, char c);
 
 /**
  * Check is a string is contained within another string.
  * @param string the source string to check within.
- * @param substring the substring to look for. 
+ * @param substring the substring to look for.
  * @return true if the substring is contained in the string,
  *         else false.
  */
-bool is_substring(char* string, char *substring);
+bool sf_is_substring(char *string, char *substring);
 
 /**
  * Get a substring of the $string based on the range.
@@ -47,23 +49,28 @@ bool is_substring(char* string, char *substring);
  * @param step the number of characters to step by.
  * @return the substring if string is not NULL.
  */
-char* get_substring(char *string, int start, int stop, int step);
+char* sf_get_substring(char *string, int start, int stop, int step);
 
 /**
- * Convert a string to upper case.
- * The returned string is malloc-ed on the heap.
- * @param string the string to be converted.
- * @return string in upper case, NULL if failed.
+ * Copy a string onto the heap.
+ * @param string the string to copy.
+ * @return a pointer to the copied string, returns NULL on fail.
  */
-char* to_uppercase(char* string);
+char* sf_duplicate_string(char *string);
 
 /**
- * Convert a string to lower case.
- * The returned string is malloc-ed on the heap.
+ * Convert a string to upper case in-place.
+ * NOTE: Does not work for string literals - will cause segfault.
  * @param string the string to be converted.
- * @return string in lower case, NULL if failed.
  */
-char* to_lowercase(char* string);
+void sf_to_uppercase(char *string);
+
+/**
+ * Convert a string to lower case in-place.
+ * NOTE: Does not work for string literals - will cause segfault.
+ * @param string the string to be converted.
+ */
+void sf_to_lowercase(char *string);
 
 /**
  * Get the index of a substring.
@@ -75,7 +82,7 @@ char* to_lowercase(char* string);
  * @param start the position to start at.
  * @return the index of the substring or -1 if not present.
  */
-int index_of(char *string, char *substring, int start);
+int sf_index_of(char *string, char *substring, int start);
 
 /**
  * Get the index of a substring scanning right to left.
@@ -89,7 +96,7 @@ int index_of(char *string, char *substring, int start);
  * @param start the position to start at.
  * @return the index of the substring or -1 if not present.
  */
-int index_of_reverse(char *string, char *substring, int start);
+int sf_index_of_reverse(char *string, char *substring, int start);
 
 /**
  * Split a string similar to String.split in java.
@@ -97,21 +104,21 @@ int index_of_reverse(char *string, char *substring, int start);
  * @param substring the string to split on.
  * @return a newly malloc-ed string array.
  */
-char** split_string(char *string, char *substring);
+char **sf_split_string(char *string, char *substring);
 
 /**
  * Split a string similar to String.split in java.
  * This modifies the original string.
  * @param string the source string to split.
  * @param substring the string to split on.
- * @return an array of string 
+ * @return an array of string
  */
-char** split_string_inplace(char *string, char *substring);
+char **sf_split_string_inplace(char *string, char *substring);
 
 /**
- * Free a string split created using split_string 
+ * Free a string split created using split_string
  * @param split_array the array of string to free.
  */
-void free_split_string(char** split_array);
+void sf_free_split_string(char **split_array);
 
 #endif
