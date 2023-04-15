@@ -4,6 +4,22 @@
 #include <stdbool.h>
 
 /**
+ * A struct to hold the result of
+ * sf_split_string.
+ */
+typedef struct { 
+    /* The array of strings. */
+    char **array;
+
+    /* The length of each of the string in array. */
+    int *strlens;
+
+    /* The length of array. */
+    long length;
+
+} sf_SplitString;
+
+/**
  * Remove a set of characters from the start and
  * end of a string. A new allocated string is returned.
  * @param string the string to trim.
@@ -104,21 +120,22 @@ int sf_index_of_reverse(char *string, char *substring, int start);
  * @param substring the string to split on.
  * @return a newly malloc-ed string array.
  */
-char **sf_split_string(char *string, char *substring);
+sf_SplitString* sf_split_string(char *string, char *substring);
 
 /**
  * Split a string similar to String.split in java.
  * This modifies the original string.
+ * NOTE: Does not work for string literals - will cause segfault.
  * @param string the source string to split.
  * @param substring the string to split on.
  * @return an array of string
  */
-char **sf_split_string_inplace(char *string, char *substring);
+sf_SplitString* sf_split_string_inplace(char *string, char *substring);
 
 /**
  * Free a string split created using split_string
- * @param split_array the array of string to free.
+ * @param split the data to be freed.
  */
-void sf_free_split_string(char **split_array);
+void sf_free_split_string(sf_SplitString *split);
 
 #endif

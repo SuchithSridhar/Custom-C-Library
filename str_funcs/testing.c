@@ -7,6 +7,18 @@
 int test_count = 1;
 int pass_count = 0;
 
+void test_is_null(void *ptr) {
+    if (ptr == NULL) {
+        printf("==== \033[0;33mTEST %02d\033[0m ==== : \033[0;32mPassed\033[0m\n", test_count);
+        pass_count++;
+    } else {
+        printf("==== \033[0;33mTEST %02d\033[0m ==== : \033[0;31mFailed\033[0m\n", test_count);
+        printf("NULL expected but recieved non-NULL pointer\n");
+    }
+
+    test_count++;
+}
+
 void test_strings_equal(char *out, char *exp) {
 
     if (strcmp(out, exp) == 0) {
@@ -451,6 +463,56 @@ int main() {
         expected = "";
         test_strings_equal(output, expected);
     }
+
+    printf("\n==== Testing split_string ====\n\n");
+    {
+        char *input, *substring, *exp_str1, *exp_str2;
+        sf_SplitString *output;
+        int exp_len;
+
+        input = "";
+        substring = " ";
+        exp_len = 1;
+        exp_str1 = "";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        input = "";
+        substring = "";
+        output = sf_split_string(input, substring);
+        test_is_null(output);
+
+        input = "hello";
+        substring = " ";
+        exp_len = 1;
+        exp_str1 = "hello";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        input = "hello world";
+        substring = " ";
+        exp_len = 2;
+        exp_str1 = "hello";
+        exp_str2 = "world";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        test_ints_equal(output->strlens[1], strlen(exp_str2));
+        test_strings_equal(output->array[1], exp_str2);
+
+        // TODO: Add more test cases with longer substrings.
+        // TODO: Add more test cases with \n as substring.
+    }
+
 
     printf("\nPassed %d / %d tests.\n", pass_count, test_count-1);
 

@@ -7,6 +7,8 @@
 
 #define TERM '\0'
 #define WHITESPACES " \n\t"
+#define ARRAY_BASE_CAPACITY 16
+#define ARRAY_GROWTH_FACTOR 2
 
 
 /**
@@ -302,16 +304,105 @@ int sf_index_of_reverse(char *string, char *substring, int start) {
     return -1;
 }
 
-char** sf_split_string(char *string, char *substring) {
-    // TODO: Complete function
-    return NULL;
+sf_SplitString* sf_split_string(char *string, char *substring) {
+    // This is not as optimized as can be in-case of either a long substring
+    // or a lot of items in the array since it only copies the string and
+    // call the in-place version of the function.
+
+    char *str_copy = sf_duplicate_string(string);
+    if (str_copy == NULL) return NULL;
+
+    sf_SplitString *spss = sf_split_string_inplace(str_copy, substring);
+
+    if (spss == NULL) free(str_copy);
+
+    return spss;
 }
 
-char** sf_split_string_inplace(char *string, char *substring) {
-    // TODO: Complete function
-    return NULL;
+sf_SplitString* sf_split_string_inplace(char *string, char *substring) {
+    if (string == NULL || substring == NULL) return NULL;
+
+    int sub_len = strlen(substring);
+    // cannot be the empty string
+    if (sub_len < 1) return NULL;
+
+    sf_SplitString *spss = malloc(sizeof(sf_SplitString));
+    if (spss == NULL) return NULL;
+
+    long capacity = ARRAY_BASE_CAPACITY;
+
+    char **array = malloc(sizeof(char*) * capacity);
+    if (array == NULL) {
+        free(spss);
+        return NULL;
+    }
+
+    int *strlens = malloc(sizeof(int) * capacity);
+    if (strlens == NULL) {
+        free(spss);
+        free(array);
+        return NULL;
+    }
+
+    long start = 0, end = -1;
+    long index = 0;
+    bool complete = false;
+
+    while (!complete) {
+        // doing pointer math rather than passing start since
+        // sf_index_of does error checking with start param.
+        // This is not necessary since this is an internal use.
+        end = sf_index_of(string+start, substring, 0);
+        if (end == -1) {
+            end = strlen(string+start) + start;
+            complete = true;
+        }
+
+        if (!complete) {
+            string[end] = TERM;
+        }
+
+        array[index] = string + start;
+        strlens[index] = end - start;
+        index++;
+        start = end + sub_len;
+
+        // Resize arrays
+        if (!complete && index >= capacity) {
+            capacity = capacity * ARRAY_GROWTH_FACTOR;
+            char **na = realloc(array, sizeof(char*) * capacity);
+            int *nsl = realloc(strlens, sizeof(int) * capacity);
+            if (na == NULL || nsl == NULL) {
+                free(array);
+                free(strlens);
+                free(spss);
+                return NULL;
+            }
+        }
+    }
+
+    spss->array = realloc(array, sizeof(char*) * index);
+    spss->strlens = realloc(strlens, sizeof(int) * index);
+    spss->length = index;
+
+    if (spss->array == NULL || spss->strlens == NULL) {
+        free(array);
+        free(strlens);
+        free(spss);
+        return NULL;
+    }
+
+    return spss;
 }
 
-void sf_free_split_string(char** split_array) {
-    // TODO: Complete function
+void sf_free_split_string(sf_SplitString *split) {
+    if (split == NULL) return;
+
+    if (split->length != 0 && split->array != NULL) {
+        free(split->array[0]);
+    }
+
+    free(split->array);
+    free(split->strlens);
+    free(split);
 }
