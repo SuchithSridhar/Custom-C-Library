@@ -466,7 +466,8 @@ int main() {
 
     printf("\n==== Testing split_string ====\n\n");
     {
-        char *input, *substring, *exp_str1, *exp_str2;
+        char *input, *substring, *exp_str1, *exp_str2,
+             *exp_str3, *exp_str4, *exp_str5;
         sf_SplitString *output;
         int exp_len;
 
@@ -479,6 +480,7 @@ int main() {
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
         test_strings_equal(output->array[0], exp_str1);
+        free(output);
 
         input = "";
         substring = "";
@@ -494,6 +496,7 @@ int main() {
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
         test_strings_equal(output->array[0], exp_str1);
+        free(output);
 
         input = "hello world";
         substring = " ";
@@ -508,9 +511,68 @@ int main() {
 
         test_ints_equal(output->strlens[1], strlen(exp_str2));
         test_strings_equal(output->array[1], exp_str2);
+        free(output);
 
-        // TODO: Add more test cases with longer substrings.
-        // TODO: Add more test cases with \n as substring.
+        input = "this-break-need-break-to be-break--break-";
+        substring = "-break-";
+        exp_len = 5;
+        exp_str1 = "this";
+        exp_str2 = "need";
+        exp_str3 = "to be";
+        exp_str4 = "";
+        exp_str5 = "";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        test_ints_equal(output->strlens[1], strlen(exp_str2));
+        test_strings_equal(output->array[1], exp_str2);
+
+        test_ints_equal(output->strlens[2], strlen(exp_str3));
+        test_strings_equal(output->array[2], exp_str3);
+
+        test_ints_equal(output->strlens[3], strlen(exp_str4));
+        test_strings_equal(output->array[3], exp_str4);
+
+        test_ints_equal(output->strlens[4], strlen(exp_str5));
+        test_strings_equal(output->array[4], exp_str5);
+        free(output);
+
+        input = "  ";
+        substring = " ";
+        exp_len = 3;
+        exp_str1 = "";
+        exp_str2 = "";
+        exp_str3 = "";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        test_ints_equal(output->strlens[1], strlen(exp_str2));
+        test_strings_equal(output->array[1], exp_str2);
+
+        test_ints_equal(output->strlens[2], strlen(exp_str3));
+        test_strings_equal(output->array[2], exp_str3);
+        free(output);
+
+        input = "newline\ntest";
+        substring = "\n";
+        exp_len = 2;
+        exp_str1 = "newline";
+        exp_str2 = "test";
+        output = sf_split_string(input, substring);
+        test_ints_equal(output->length, exp_len);
+
+        test_ints_equal(output->strlens[0], strlen(exp_str1));
+        test_strings_equal(output->array[0], exp_str1);
+
+        test_ints_equal(output->strlens[1], strlen(exp_str2));
+        test_strings_equal(output->array[1], exp_str2);
+        free(output);
     }
 
 

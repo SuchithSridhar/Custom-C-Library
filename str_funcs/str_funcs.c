@@ -356,6 +356,8 @@ sf_SplitString* sf_split_string_inplace(char *string, char *substring) {
         if (end == -1) {
             end = strlen(string+start) + start;
             complete = true;
+        } else {
+            end = end + start;
         }
 
         if (!complete) {
