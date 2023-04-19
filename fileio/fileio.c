@@ -5,11 +5,12 @@
 #include <stdbool.h>
 
 #define NEWLINE '\n'
+#define TERM '\0'
 #define GROWTH_FACTOR 2
 #define INITIAL_SIZE 32
 
 
-void _update_status(FIO_STATUS *status, FIO_STATUS value) {
+void _update_status(fio_Status *status, fio_Status value) {
     if (status != NULL) *status = value;
 }
 
@@ -23,7 +24,17 @@ char* _grow_array(char *array, int *cur_size) {
     return array;
 }
 
-char* read_line(FILE *stream, int *str_len, FIO_STATUS *status) {
+bool _char_in_str(char *string, char c) {
+    int index = 0;
+    while (string[index] != TERM) {
+        if (string[index] == c) return true;
+        index++;
+    }
+    return false;
+}
+
+char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
+    char *end_chars) {
     if (stream == NULL) {
         _update_status(status, FIO_NULL_ERR);
         return NULL;
@@ -39,9 +50,9 @@ char* read_line(FILE *stream, int *str_len, FIO_STATUS *status) {
         return NULL;
     }
 
-    while (1) {
+    while (true) {
         cur_char = getc(stream);
-        if (cur_char == NEWLINE || cur_char == EOF) {
+        if (_char_in_str(end_chars, cur_char)) {
             break;
         }
 
@@ -86,4 +97,21 @@ char* read_line(FILE *stream, int *str_len, FIO_STATUS *status) {
     _update_status(status, FIO_SUCCESS);
     
     return string;
+}
+
+char* fio_read_line(FILE *stream, int *str_len, fio_Status *status) {
+    char checking[3];
+    checking[0] = NEWLINE;
+    checking[1] = EOF;
+    checking[2] = TERM;
+
+    return _read_till_char(stream, str_len, status, checking);
+}
+
+char* fio_read_file(FILE *stream, int *str_len, fio_Status *status) {
+    char checking[2];
+    checking[0] = EOF;
+    checking[1] = TERM;
+
+    return _read_till_char(stream, str_len, status, checking);
 }
