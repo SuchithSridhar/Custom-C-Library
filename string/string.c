@@ -383,11 +383,11 @@ sf_SplitString* sf_split_string_inplace(char *string, char *substring) {
         }
     }
 
-    spss->array = realloc(array, sizeof(char*) * index);
+    spss->lines = realloc(array, sizeof(char*) * index);
     spss->strlens = realloc(strlens, sizeof(int) * index);
     spss->length = index;
 
-    if (spss->array == NULL || spss->strlens == NULL) {
+    if (spss->lines == NULL || spss->strlens == NULL) {
         free(array);
         free(strlens);
         free(spss);
@@ -400,11 +400,11 @@ sf_SplitString* sf_split_string_inplace(char *string, char *substring) {
 void sf_free_split_string(sf_SplitString *split) {
     if (split == NULL) return;
 
-    if (split->length != 0 && split->array != NULL) {
-        free(split->array[0]);
+    if (split->length != 0 && split->lines != NULL) {
+        free(split->lines[0]);
     }
 
-    free(split->array);
+    free(split->lines);
     free(split->strlens);
     free(split);
 }

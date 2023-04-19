@@ -9,12 +9,12 @@
  */
 typedef struct { 
     /* The array of strings. */
-    char **array;
+    char **lines;
 
-    /* The length of each of the string in array. */
+    /* The length of each of the string in lines. */
     int *strlens;
 
-    /* The length of array. */
+    /* The length of lines. */
     long length;
 
 } sf_SplitString;
@@ -116,6 +116,8 @@ int sf_index_of_reverse(char *string, char *substring, int start);
 
 /**
  * Split a string similar to String.split in java.
+ * Note, all the lines are actually stored in a contiguous block
+ * and hence only the first pointer needs to be freed.
  * @param string the source string to split.
  * @param substring the string to split on.
  * @return a newly malloc-ed string array.
@@ -128,7 +130,7 @@ sf_SplitString* sf_split_string(char *string, char *substring);
  * NOTE: Does not work for string literals - will cause segfault.
  * @param string the source string to split.
  * @param substring the string to split on.
- * @return an array of string
+ * @return an array of string as a SplitString object.
  */
 sf_SplitString* sf_split_string_inplace(char *string, char *substring);
 

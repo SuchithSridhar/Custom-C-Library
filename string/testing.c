@@ -479,7 +479,7 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
         free(output);
 
         input = "";
@@ -495,7 +495,7 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
         free(output);
 
         input = "hello world";
@@ -507,10 +507,10 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
 
         test_ints_equal(output->strlens[1], strlen(exp_str2));
-        test_strings_equal(output->array[1], exp_str2);
+        test_strings_equal(output->lines[1], exp_str2);
         free(output);
 
         input = "this-break-need-break-to be-break--break-";
@@ -525,19 +525,19 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
 
         test_ints_equal(output->strlens[1], strlen(exp_str2));
-        test_strings_equal(output->array[1], exp_str2);
+        test_strings_equal(output->lines[1], exp_str2);
 
         test_ints_equal(output->strlens[2], strlen(exp_str3));
-        test_strings_equal(output->array[2], exp_str3);
+        test_strings_equal(output->lines[2], exp_str3);
 
         test_ints_equal(output->strlens[3], strlen(exp_str4));
-        test_strings_equal(output->array[3], exp_str4);
+        test_strings_equal(output->lines[3], exp_str4);
 
         test_ints_equal(output->strlens[4], strlen(exp_str5));
-        test_strings_equal(output->array[4], exp_str5);
+        test_strings_equal(output->lines[4], exp_str5);
         free(output);
 
         input = "  ";
@@ -550,13 +550,13 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
 
         test_ints_equal(output->strlens[1], strlen(exp_str2));
-        test_strings_equal(output->array[1], exp_str2);
+        test_strings_equal(output->lines[1], exp_str2);
 
         test_ints_equal(output->strlens[2], strlen(exp_str3));
-        test_strings_equal(output->array[2], exp_str3);
+        test_strings_equal(output->lines[2], exp_str3);
         free(output);
 
         input = "newline\ntest";
@@ -568,10 +568,10 @@ int main() {
         test_ints_equal(output->length, exp_len);
 
         test_ints_equal(output->strlens[0], strlen(exp_str1));
-        test_strings_equal(output->array[0], exp_str1);
+        test_strings_equal(output->lines[0], exp_str1);
 
         test_ints_equal(output->strlens[1], strlen(exp_str2));
-        test_strings_equal(output->array[1], exp_str2);
+        test_strings_equal(output->lines[1], exp_str2);
         free(output);
     }
 
