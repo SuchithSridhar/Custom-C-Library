@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -O3
 CSTD = c18
-TARGET = str_funcs
+TARGET = string
 
 .PHONEY = clean all test
 

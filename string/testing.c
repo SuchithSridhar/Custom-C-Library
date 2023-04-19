@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "str_funcs.h"
+#include "./string.h"
 
 int test_count = 1;
 int pass_count = 0;
