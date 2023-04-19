@@ -10,10 +10,10 @@ Feel free to fork this and create your own library.
 
 ## Contents
 
-##### fileio
+#### fileio
 
 A library of file IO operations that I commonly perform. This would include things like `read_line` and `read_lines` which can read a line or read an array of lines from a file or `stdin`.
 
-##### str\_funcs
+#### string
 
 This library of string functions that are usually avail in languages like java or python, such as `is_substring` or `index_of`.
