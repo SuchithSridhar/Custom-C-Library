@@ -63,7 +63,7 @@ fio_Status fio_write_line(FILE *stream, char *string);
  * @param delimiter the delimiter to add between 2 items in the array.
  * @return The status of the operation. 
  */
-fio_Status fio_write_line(FILE *stream, char **str_arr, int arr_len, char* delimiter);
+fio_Status fio_write_lines(FILE *stream, char **str_arr, int arr_len, char* delimiter);
 
 /**
  * Write a string to a file.
