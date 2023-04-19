@@ -3,9 +3,16 @@
 
 #include <stdio.h>
 
+/* One of the params were NULL. */
 #define FIO_NULL_ERR 'n'
+
+/* A memory error, such as a failed malloc. */
 #define FIO_MEM_ERR 'm'
+
+/* The only character present is the EOF character. */
 #define FIO_EOF 'e'
+
+/* The operation was successful. */
 #define FIO_SUCCESS 's'
 
 
@@ -37,5 +44,34 @@ char* fio_read_line(FILE *stream, int *str_len, fio_Status *status);
  * @return the string that is read in.
  */
 char* fio_read_file(FILE *stream, int *str_len, fio_Status *status);
+
+/**
+ * Write a line to a file.
+ * The newline character isn't added automatically.
+ * @param stream a FILE stream to write data to.
+ * @param string the string that is to be written.
+ * @return The status of the operation. 
+ */
+fio_Status fio_write_line(FILE *stream, char *string);
+
+/**
+ * Write an array of string to a file. The delimiter
+ * string is appended between all pairs of strings.
+ * @param stream a FILE stream to write data to.
+ * @param str_arr the array of string to be written.
+ * @param arr_len the length of the string array.
+ * @param delimiter the delimiter to add between 2 items in the array.
+ * @return The status of the operation. 
+ */
+fio_Status fio_write_line(FILE *stream, char **str_arr, int arr_len, char* delimiter);
+
+/**
+ * Write a string to a file.
+ * The newline character isn't added automatically.
+ * @param stream a FILE stream to write data to.
+ * @param string the string that is to be written.
+ * @return The status of the operation. 
+ */
+fio_Status fio_write_file(FILE *stream, char *string);
 
 #endif

@@ -115,3 +115,15 @@ char* fio_read_file(FILE *stream, int *str_len, fio_Status *status) {
 
     return _read_till_char(stream, str_len, status, checking);
 }
+
+fio_Status fio_write_line(FILE *stream, char *string) {
+    // TODO: Complete the function.
+}
+
+fio_Status fio_write_lines(FILE *stream, char **str_arr, int arr_len, char* delimiter) {
+    // TODO: Complete the function.
+}
+
+fio_Status fio_write_file(FILE *stream, char *string) {
+    // TODO: Complete the function.
+}
