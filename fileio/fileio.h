@@ -35,6 +35,11 @@ typedef char fio_Status;
 char* fio_read_line(FILE *stream, int *str_len, fio_Status *status);
 
 /**
+ * TODO: Complete this function and docs.
+ */
+char* fio_read_lines(FILE *stream, int *str_len, fio_Status *status);
+
+/**
  * Read string until end of file.
  * @param stream a FILE stream to read data from.
  * @param str_len this is a pointer where the length of
@@ -61,6 +66,7 @@ fio_Status fio_write_line(FILE *stream, char *string);
  * @param str_arr the array of string to be written.
  * @param arr_len the length of the string array.
  * @param delimiter the delimiter to add between 2 items in the array.
+ *        If NULL, delimiter will be set to the empty string.
  * @return The status of the operation. 
  */
 fio_Status fio_write_lines(FILE *stream, char **str_arr, int arr_len, char* delimiter);

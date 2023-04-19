@@ -117,13 +117,23 @@ char* fio_read_file(FILE *stream, int *str_len, fio_Status *status) {
 }
 
 fio_Status fio_write_line(FILE *stream, char *string) {
-    // TODO: Complete the function.
+    if (stream == NULL || string == NULL) return FIO_NULL_ERR;
+    fputs(string, stream);
+    fflush(stream);
+    return FIO_SUCCESS;
 }
 
 fio_Status fio_write_lines(FILE *stream, char **str_arr, int arr_len, char* delimiter) {
-    // TODO: Complete the function.
+    if (stream == NULL || str_arr == NULL) return FIO_NULL_ERR;
+
+    for (int i = 0; i < arr_len; i++) {
+        fputs(str_arr[i], stream);
+        if (i != (arr_len - 1) && delimiter != NULL) fputs(delimiter, stream);
+    }
+    fflush(stream);
+    return FIO_SUCCESS;
 }
 
 fio_Status fio_write_file(FILE *stream, char *string) {
-    // TODO: Complete the function.
+    return fio_write_line(stream, string);
 }
