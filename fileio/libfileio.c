@@ -1,5 +1,6 @@
 #include "fileio.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,14 +11,10 @@
 #define INITIAL_SIZE 32
 
 
-void _update_status(fio_Status *status, fio_Status value) {
-    if (status != NULL) *status = value;
-}
-
-char* _grow_array(char *array, int *cur_size) {
+void* _grow_array(void *array, int *cur_size, size_t type_size) {
     int new_size = *cur_size * GROWTH_FACTOR;
 
-    array = realloc(array, sizeof(char) * new_size);
+    array = realloc(array, type_size * new_size);
     if (array == NULL) return NULL;
 
     *cur_size = new_size;
@@ -33,10 +30,24 @@ bool _char_in_str(char *string, char c) {
     return false;
 }
 
-char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
-    char *end_chars) {
-    if (stream == NULL) {
-        _update_status(status, FIO_NULL_ERR);
+fio_DataRead* _return_empty_status(fio_Status status) {
+    fio_DataRead *data = malloc(sizeof(fio_DataRead));
+    if (data == NULL) return NULL;
+    data->status = status;
+    data->lines = NULL;
+    data->str_lens = NULL;
+    data->length = 0;
+    return data;
+}
+
+/**
+ * A function to read from file till one of the chars in $end_chars.
+ * This is the function does the actually reading from the file, the
+ * other read functions in the file are just wrappers for this one.
+ */
+char* _read_till_char(FILE *f, int *str_len, fio_Status *status, char *end_chars) {
+    if (f == NULL) {
+        *status = FIO_NULL_ERR;
         return NULL;
     }
 
@@ -46,12 +57,12 @@ char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
 
     char *string = malloc(sizeof(char) * cur_size);
     if (string == NULL) {
-        _update_status(status, FIO_MEM_ERR);
+        *status = FIO_MEM_ERR;
         return NULL;
     }
 
     while (true) {
-        cur_char = getc(stream);
+        cur_char = getc(f);
         if (_char_in_str(end_chars, cur_char)) {
             break;
         }
@@ -61,10 +72,10 @@ char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
 
         // should never be greater than.
         if (index >= cur_size) {
-            char *ns = _grow_array(string, &cur_size);
+            char *ns = (char*) _grow_array(string, &cur_size, sizeof(char));
             if (ns == NULL) {
                 free(string);
-                _update_status(status, FIO_MEM_ERR);
+                *status = FIO_MEM_ERR;
                 return NULL;
             }
 
@@ -74,7 +85,7 @@ char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
 
     if (index == 0 && cur_char == EOF) {
         free(string);
-        _update_status(status, FIO_EOF);
+        *status = FIO_EOF;
         return NULL;
     }
 
@@ -84,7 +95,7 @@ char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
         char *ns = realloc(string, sizeof(char) * total_size);
         if (ns == NULL) {
             free(string);
-            _update_status(status, FIO_MEM_ERR);
+            *status = FIO_MEM_ERR;
             return NULL;
         }
         string = ns;
@@ -94,26 +105,131 @@ char* _read_till_char(FILE *stream, int *str_len, fio_Status *status,
         *str_len = index;
     }
 
-    _update_status(status, FIO_SUCCESS);
+    *status = FIO_SUCCESS;
     
     return string;
 }
 
-char* fio_read_line(FILE *stream, int *str_len, fio_Status *status) {
-    char checking[3];
-    checking[0] = NEWLINE;
-    checking[1] = EOF;
-    checking[2] = TERM;
+fio_DataRead* _read_till_chars_into_struct(FILE *stream, char *end_chars) {
+    int length;
+    fio_Status status;
+    fio_DataRead *data = malloc(sizeof(fio_DataRead));
+    if (data == NULL) return NULL;
 
-    return _read_till_char(stream, str_len, status, checking);
+    char *string = _read_till_char(stream, &length, &status, end_chars);
+
+    if (string == NULL) {
+        return _return_empty_status(status);
+    }
+
+    // Only a single line to be stored
+    data->str_lens = malloc(sizeof(int));
+    data->lines = malloc(sizeof(char*));
+    if (data->str_lens == NULL || data->lines == NULL) {
+        free(string);
+        fio_free_DataRead(data);
+        return _return_empty_status(FIO_MEM_ERR);
+    }
+
+    data->length = 1;
+    *(data->str_lens) = length;
+    *(data->lines) = string;
+    data->status = status;
+
+    return data;
 }
 
-char* fio_read_file(FILE *stream, int *str_len, fio_Status *status) {
-    char checking[2];
-    checking[0] = EOF;
-    checking[1] = TERM;
+fio_DataRead* fio_read_line(FILE *stream) {
+    char end_chars[3];
+    end_chars[0] = NEWLINE;
+    end_chars[1] = EOF;
+    end_chars[2] = TERM;
 
-    return _read_till_char(stream, str_len, status, checking);
+    return _read_till_chars_into_struct(stream, end_chars);
+}
+
+fio_DataRead* fio_read_file(FILE *stream) {
+    char end_chars[2];
+    end_chars[0] = EOF;
+    end_chars[1] = TERM;
+
+    return _read_till_chars_into_struct(stream, end_chars);
+}
+
+fio_DataRead* fio_read_lines(FILE *stream) {
+    char end_chars[3];
+    end_chars[0] = NEWLINE;
+    end_chars[1] = EOF;
+    end_chars[2] = TERM;
+
+    fio_DataRead *data = malloc(sizeof(fio_DataRead));
+    if (data == NULL) return NULL;
+
+    int sl_cap = INITIAL_SIZE, l_cap = INITIAL_SIZE;
+    data->str_lens = malloc(sizeof(int) * sl_cap);
+    data->lines = malloc(sizeof(char*) * l_cap);
+    data->length = 0;
+
+    if (data->str_lens == NULL || data->lines == NULL) {
+        fio_free_DataRead(data);
+        return _return_empty_status(FIO_MEM_ERR);
+    }
+
+    int length;
+    int index = 0;
+    fio_Status status;
+
+    while (true) {
+        char *string = _read_till_char(stream, &length, &status, end_chars);
+        if (string == NULL && status != FIO_EOF) {
+            fio_free_DataRead(data);
+            return _return_empty_status(status);
+        }
+
+        if (string == NULL) {
+            data->status = FIO_SUCCESS;
+            return data;
+        }
+
+        if (index >= sl_cap) {
+            char **ns = (char **) _grow_array(data->lines, &l_cap, sizeof(char*));
+            int *ln = (int *) _grow_array(data->str_lens, &sl_cap, sizeof(int));
+
+            if (ns == NULL || ln == NULL) {
+                free(ns);
+                free(ln);
+                fio_free_DataRead(data);
+                return _return_empty_status(FIO_MEM_ERR);
+            }
+
+            data->lines = ns;
+            data->str_lens = ln;
+        }
+
+        data->lines[index] = string;
+        data->str_lens[index] = length;
+        index++;
+    }
+
+    return data;
+}
+
+void fio_free_DataRead(fio_DataRead *fdr) {
+    if (fdr == NULL) return;
+
+    if (fdr->lines == NULL) {
+        free(fdr->str_lens);  // may or may not be null.
+        free(fdr);
+        return;
+    }
+
+    for (int i = 0; i < fdr->length; i++) {
+        free(fdr->lines[i]);
+    }
+
+    free(fdr->lines);
+    free(fdr->str_lens);
+    free(fdr);
 }
 
 fio_Status fio_write_line(FILE *stream, char *string) {

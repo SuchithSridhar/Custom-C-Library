@@ -24,31 +24,65 @@ typedef char fio_Status;
 
 
 /**
- * Read string until the end of the line or file.
- * @param stream a FILE stream to read data from.
- * @param str_len this is a pointer where the length of
- *        the read in string is stored when it's not NULL.
- * @param status this is a pointer to where the status of
- *        of the operation is stored when it's not NULL.
- * @return the string that is read in.
+ * A structure to facilitate returning multiple
+ * files from the read functions. Always check the
+ * status field before using any other field.
  */
-char* fio_read_line(FILE *stream, int *str_len, fio_Status *status);
+typedef struct {
+    /* The array of strings holding the lines read. */
+    char **lines; 
+
+    /* An array of the length of each string in lines. */
+    int *str_lens;
+
+    /* The length of the lines and str_lens array. */
+    int length;
+
+    /* The status of the operation. */
+    fio_Status status;
+} fio_DataRead;
+
 
 /**
- * TODO: Complete this function and docs.
+ * Read a line from the file stream.
+ * Returns a malloc-ed fio_DataRead with the length
+ * field set to 1 (since we read a single line).
+ *
+ * @param stream the FILE stream to read from.
+ *
+ * @return a pointer to the fio_DataRead struct.
  */
-char* fio_read_lines(FILE *stream, int *str_len, fio_Status *status);
+fio_DataRead* fio_read_line(FILE *stream);
 
 /**
- * Read string until end of file.
- * @param stream a FILE stream to read data from.
- * @param str_len this is a pointer where the length of
- *        the read in string is stored when it's not NULL.
- * @param status this is a pointer to where the status of
- *        of the operation is stored when it's not NULL.
- * @return the string that is read in.
+ * Read all lines in file till End-of-file.
+ * Returns a malloc-ed fio_DataRead with all the
+ * fields populated.
+ *
+ * @param stream the FILE stream to read from.
+ *
+ * @return a pointer to the fio_DataRead struct.
  */
-char* fio_read_file(FILE *stream, int *str_len, fio_Status *status);
+fio_DataRead* fio_read_lines(FILE *stream);
+
+/**
+ * Read till End-of-file from a file.
+ * Returns a malloc-ed fio_DataRead with the
+ * lines array containing a single line which
+ * holds the entire file.
+ *
+ * @param stream the FILE stream to read from.
+ *
+ * @return a pointer to the fio_DataRead struct.
+ */
+fio_DataRead* fio_read_file(FILE *stream);
+
+/**
+ * A function to free the fio_DataRead struct.
+ *
+ * @param fio_data_read a pointer to the struct to be freed.
+ */
+void fio_free_DataRead(fio_DataRead *fio_data_read);
 
 /**
  * Write a line to a file.

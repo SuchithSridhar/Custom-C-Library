@@ -10,7 +10,7 @@ SHARED_FLAGS = -fPIC -shared
 BINS=test/lib_test lib$(TARGET).so
 CURRENT_DIR = $(shell pwd)
 
-.PHONEY = clean all test
+.PHONEY = clean all test debug
 
 all: lib$(TARGET).o lib$(TARGET).so
 
@@ -22,6 +22,10 @@ lib$(TARGET).so: $(TARGET).h lib$(TARGET).c
 
 test: test/lib_test test/test.sh
 	bash test/test.sh
+
+# Compile for gdb
+debug: lib$(TARGET).c ./test/testing.c
+	$(CC) -o test/lib_test --std=$(CSTD) -g lib$(TARGET).c ./test/testing.c
 
 test/lib_test: lib$(TARGET).o test/testing.c
 	$(CC) -o $@ --std=$(CSTD) lib$(TARGET).o ./test/testing.c

@@ -16,6 +16,7 @@ do
         ((pass_count = pass_count + 1))
     else
         printf "==== \033[0;33mTEST %02d\033[0m ==== : \033[0;31mFailed\033[0m\n" $i
+        diff --color ./test/data/test$i.exp ./test/data/test$i.out
     fi
     ((test_count = test_count + 1))
 done
@@ -30,6 +31,7 @@ do
         ((pass_count = pass_count + 1))
     else
         printf "==== \033[0;33mTEST %02d\033[0m ==== : \033[0;31mFailed\033[0m\n" $i
+        diff --color ./test/data/test$i.exp ./test/data/test$i.out
     fi
     ((test_count = test_count + 1))
 done

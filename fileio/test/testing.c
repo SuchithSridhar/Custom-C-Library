@@ -12,7 +12,6 @@ int main(int argc, char **argv) {
     }
 
     if (strcmp(argv[2], "readline") == 0) {
-        char *string;
         FILE *f = fopen(argv[1], "r");
 
         if (f == NULL) {
@@ -20,16 +19,19 @@ int main(int argc, char **argv) {
             return EXIT_FAILURE;
         }
 
-        int length;
-        fio_Status status;
+        fio_DataRead *fio_data;
         while (true) {
-            string = fio_read_line(f, &length, &status);
-            if (string == NULL) break;
-            printf("=%s=%d=%c=\n", string, length, status);
-            free(string);
+            fio_data = fio_read_line(f);
+            if (fio_data->status != FIO_SUCCESS) break;
+            printf(
+                "=%s=%d=%c=\n",
+                fio_data->lines[0],
+                fio_data->str_lens[0],
+                fio_data->status
+            );
+            fio_free_DataRead(fio_data);
         }
     } else if (strcmp(argv[2], "readfile") == 0) {
-        char *string;
         FILE *f = fopen(argv[1], "r");
 
         if (f == NULL) {
@@ -37,12 +39,16 @@ int main(int argc, char **argv) {
             return EXIT_FAILURE;
         }
 
-        int length;
-        fio_Status status;
-        string = fio_read_file(f, &length, &status);
-        if (string != NULL) {
-            printf("=%s=%d=%c=\n", string, length, status);
-            free(string);
+        fio_DataRead *fio_data;
+        fio_data = fio_read_file(f);
+        if (fio_data->status == FIO_SUCCESS) {
+            printf(
+                "=%s=%d=%c=\n",
+                fio_data->lines[0],
+                fio_data->str_lens[0],
+                fio_data->status
+            );
+            fio_free_DataRead(fio_data);
         }
     } else {
         fprintf(stderr, "Invalid command to program.\n");
