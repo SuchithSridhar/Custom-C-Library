@@ -31,4 +31,4 @@ test_shared: test/test.sh test/testing.c lib$(TARGET).so
 	LD_LIBRARY_PATH=$(CURRENT_DIR);${LD_LIBRARY_PATH} bash test/test.sh
 
 clean:
-	rm -f ./test/lib_test ./test/test*.out *.o *.so
+	rm -f ./test/lib_test ./test/data/test*.out *.o *.so
