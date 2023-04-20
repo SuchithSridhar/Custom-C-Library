@@ -3,18 +3,32 @@ CFLAGS = -O3
 CSTD = c18
 TARGET = fileio
 
+# fPIC: Position Independent Code
+# shared: make a shared library
+SHARED_FLAGS = -fPIC -shared
+
+BINS=test/lib_test lib$(TARGET).so
+CURRENT_DIR = $(shell pwd)
+
 .PHONEY = clean all test
 
-all: $(TARGET).o
+all: lib$(TARGET).o lib$(TARGET).so
 
-$(TARGET).o: $(TARGET).h $(TARGET).c
-	$(CC) --std=$(CSTD) -c $(CFLAGS) -o $(TARGET).o $(TARGET).c
+lib$(TARGET).o: $(TARGET).h $(TARGET).c
+	$(CC) --std=$(CSTD) -c $(CFLAGS) -o $@ lib$(TARGET).c
 
-test: test/testing test/test.sh
+lib$(TARGET).so: $(TARGET).h lib$(TARGET).c
+	$(CC) --std=$(CSTD) $(CFLAGS) $(SHARED_FLAGS) -o $@ lib$(TARGET).c
+
+test: test/lib_test test/test.sh
 	bash test/test.sh
 
-test/testing: $(TARGET).o test/testing.c
-	$(CC) -o ./test/testing --std=$(CSTD) $(TARGET).o ./test/testing.c
+test/lib_test: lib$(TARGET).o test/testing.c
+	$(CC) -o $@ --std=$(CSTD) lib$(TARGET).o ./test/testing.c
+
+test_shared: test/test.sh test/testing.c lib$(TARGET).so
+	$(CC) -o test/testing --std=$(CSTD) test/testing.c -L. -l$(TARGET)
+	LD_LIBRARY_PATH=$(CURRENT_DIR);${LD_LIBRARY_PATH} bash test/test.sh
 
 clean:
-	rm -f ./test/testing ./test/test*.out *.o
+	rm -f ./test/lib_test ./test/test*.out *.o *.so
