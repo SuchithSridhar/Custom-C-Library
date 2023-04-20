@@ -89,6 +89,13 @@ void sf_to_uppercase(char *string);
 void sf_to_lowercase(char *string);
 
 /**
+ * Reverse a string in-place.
+ * NOTE: Does not work for string literals - will cause segfault.
+ * @param string the string to be reversed.
+ */
+void sf_reverse_string(char *string);
+
+/**
  * Get the index of a substring.
  * The function returns -1 if the substring is not present.
  * The value $start is position to start scanning, it can

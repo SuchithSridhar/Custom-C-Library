@@ -188,6 +188,18 @@ void sf_to_lowercase(char* string) {
     }
 }
 
+void sf_reverse_string(char *string) {
+    if (string == NULL) return;
+
+    int length = strlen(string);
+    char tmp;
+    for (int i = 0; i < length/2; i++) {
+        tmp = string[i];
+        string[i] = string[length - 1 - i];
+        string[length - 1 - i] = tmp;
+    }
+}
+
 int sf_index_of(char *string, char *substring, int start) {
     
     if (string == NULL || substring == NULL) {

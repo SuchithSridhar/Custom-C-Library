@@ -464,6 +464,30 @@ int main() {
         test_strings_equal(output, expected);
     }
 
+    printf("\n==== Testing reverse_string ====\n\n");
+    {
+        char *input, *output, *expected;
+
+        input = "helloworld";
+        output = sf_duplicate_string(input);
+        sf_reverse_string(output);
+        expected = "dlrowolleh";
+        test_strings_equal(output, expected);
+
+        input = " h *8e  ]13057o W '/.;' OrLd";
+        output = sf_duplicate_string(input);
+        sf_reverse_string(output);
+        expected = "dLrO ';./' W o75031]  e8* h ";
+        test_strings_equal(output, expected);
+
+        // Convert empty string
+        input = "";
+        output = sf_duplicate_string(input);
+        sf_reverse_string(output);
+        expected = "";
+        test_strings_equal(output, expected);
+    }
+
     printf("\n==== Testing split_string ====\n\n");
     {
         char *input, *substring, *exp_str1, *exp_str2,
