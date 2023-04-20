@@ -14,7 +14,7 @@ CURRENT_DIR = $(shell pwd)
 
 all: lib$(TARGET).o lib$(TARGET).so
 
-lib$(TARGET).o: $(TARGET).h $(TARGET).c
+lib$(TARGET).o: $(TARGET).h lib$(TARGET).c
 	$(CC) --std=$(CSTD) -c $(CFLAGS) -o $@ lib$(TARGET).c
 
 lib$(TARGET).so: $(TARGET).h lib$(TARGET).c
