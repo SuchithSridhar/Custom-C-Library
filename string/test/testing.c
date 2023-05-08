@@ -412,6 +412,24 @@ int main() {
         test_strings_equal(output, input);
     }
 
+    printf("\n==== Testing concat ====\n\n");
+    {
+        char *a, *b, *output, *expected;
+
+        a = "hello";
+        b = " world";
+        expected = "hello world";
+        output = sf_concat(a, b, false);
+        test_strings_equal(output, expected);
+
+        a = sf_duplicate_string("hello");
+        b = " world";
+        expected = "hello world";
+        output = sf_concat(a, b, true);
+        test_strings_equal(output, expected);
+    }
+
+
     printf("\n==== Testing to_uppercase ====\n\n");
     {
         char *input, *output, *expected;

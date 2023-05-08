@@ -122,6 +122,17 @@ int sf_index_of(char *string, char *substring, int start);
 int sf_index_of_reverse(char *string, char *substring, int start);
 
 /**
+ * Concat a string to an existing string.
+ * Returns a new string or appends it to the end of the base string.
+ * NOTE: inplace must not true if $base is not on the heap.
+ * @param base the base string to append to.
+ * @param operand the string to append.
+ * @param inplace if true, will append the operand to base and resize if necessary.
+ * @return the new combined string.
+ */
+char* sf_concat(char* base, char* operand, bool inplace);
+
+/**
  * Split a string similar to String.split in java.
  * Note, all the lines are actually stored in a contiguous block
  * and hence only the first pointer needs to be freed.

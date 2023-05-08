@@ -1,5 +1,6 @@
 #include "./string.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -314,6 +315,33 @@ int sf_index_of_reverse(char *string, char *substring, int start) {
     }
 
     return -1;
+}
+
+char* sf_concat(char* base, char* operand, bool inplace) {
+    int32_t alen = strlen(base);
+    int32_t blen = strlen(operand);
+    int32_t new_size = alen + blen + 1;
+
+    char *new_str;
+    if (inplace) {
+        new_str = realloc(base, sizeof(char) * (new_size));
+    } else {
+        new_str = malloc(sizeof(char) * (new_size));
+    }
+
+    if (new_str == NULL)
+        return NULL;
+
+    if (!inplace) {
+        for (int i = 0; i < alen; i++)
+            new_str[i] = base[i];
+    }
+
+    for (int i = 0; i < blen; i++)
+        new_str[alen + i] = operand[i];
+
+    new_str[new_size - 1] = TERM;
+    return new_str;
 }
 
 sf_SplitString* sf_split_string(char *string, char *substring) {
