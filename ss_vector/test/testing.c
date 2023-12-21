@@ -53,7 +53,7 @@ int compare_int_helper(void *a, void *b) {
 int main(int argc, char *argv[]) {
     printf("\n==== Testing initialize ====\n\n");
     {
-        ss_Vector *vec = ssv_init(sizeof(int));
+        ssv_vector_t *vec = ssv_init(sizeof(int), 1);
         test_is_not_null(vec);
     }
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
         item2 = 20;
         item3 = 30;
 
-        ss_Vector *vec = ssv_init(sizeof(int));
+        ssv_vector_t *vec = ssv_init(sizeof(int), 1);
         test_is_not_null(vec);
 
         ssv_push(vec, &item1);

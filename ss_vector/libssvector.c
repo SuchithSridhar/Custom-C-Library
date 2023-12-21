@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-ss_Vector* ssv_init(size_t memb_size, size_t init_size) {
-    ss_Vector *vec = malloc(sizeof(ss_Vector));
+ssv_vector_t* ssv_init(size_t memb_size, size_t init_size) {
+    ssv_vector_t *vec = malloc(sizeof(ssv_vector_t));
 
     if (vec == NULL) return NULL;
 
@@ -22,7 +22,7 @@ ss_Vector* ssv_init(size_t memb_size, size_t init_size) {
     return vec;
 }
 
-bool ssv_destroy(ss_Vector *vec) {
+bool ssv_destroy(ssv_vector_t *vec) {
     if (vec == NULL) return true;
 
     free(vec->array);
@@ -31,7 +31,7 @@ bool ssv_destroy(ss_Vector *vec) {
     return true;
 }
 
-void* ssv_get(ss_Vector *vec, size_t index) {
+void* ssv_get(ssv_vector_t *vec, size_t index) {
     if (vec && index < vec->size) {
         return (void*)((char*)vec->array + (index * vec->memb_size));
     }
@@ -39,7 +39,7 @@ void* ssv_get(ss_Vector *vec, size_t index) {
     return NULL;   
 }
 
-void* ssv_peek(ss_Vector *vec) {
+void* ssv_peek(ssv_vector_t *vec) {
     if (vec && vec->size > 0) {
         return (void*)((char*)vec->array + ((vec->size-1) * vec->memb_size));
     }
@@ -47,7 +47,7 @@ void* ssv_peek(ss_Vector *vec) {
     return NULL;   
 }
 
-bool ssv_push(ss_Vector *vec, void *item) {
+bool ssv_push(ssv_vector_t *vec, void *item) {
     if (vec == NULL || item == NULL) return false;
     bool success = true;
     if (vec->size == vec->capacity) {
@@ -62,7 +62,7 @@ bool ssv_push(ss_Vector *vec, void *item) {
     return true;
 }
 
-void* ssv_pop(ss_Vector *vec) {
+void* ssv_pop(ssv_vector_t *vec) {
     if (vec == NULL || vec->size == 0) return NULL;
 
     void *src = (char *) vec->array + (vec->memb_size * (vec->size - 1));
@@ -73,19 +73,19 @@ void* ssv_pop(ss_Vector *vec) {
     return elem;
 }
 
-bool ssv_clear(ss_Vector *vec) {
+bool ssv_clear(ssv_vector_t *vec) {
     if (vec == NULL) return false;
     vec->size = 0;
     return true;
 }
 
-bool ssv_delete(ss_Vector *vec) {
+bool ssv_delete(ssv_vector_t *vec) {
     if (vec == NULL || vec->size == 0) return false;
     vec->size--;
     return true;
 }
 
-bool ssv_delete_at(ss_Vector *vec, size_t index) {
+bool ssv_delete_at(ssv_vector_t *vec, size_t index) {
     if (vec == NULL || vec->size == 0 || index >= vec->size) {
         return false;
     }
@@ -102,7 +102,7 @@ bool ssv_delete_at(ss_Vector *vec, size_t index) {
     return true;
 }
 
-void* ssv_pop_at(ss_Vector *vec, size_t index) {
+void* ssv_pop_at(ssv_vector_t *vec, size_t index) {
     if (vec == NULL || vec->size == 0 || index >= vec->size) {
         return NULL;
     }
@@ -121,7 +121,7 @@ void* ssv_pop_at(ss_Vector *vec, size_t index) {
     return elem;
 }
 
-bool ssv_push_at(ss_Vector *vec, void *item, size_t index) {
+bool ssv_push_at(ssv_vector_t *vec, void *item, size_t index) {
     if (!vec || index > vec->size) {
         return false;
     }
@@ -145,7 +145,7 @@ bool ssv_push_at(ss_Vector *vec, void *item, size_t index) {
     return true;
 }
 
-bool ssv_replace_at(ss_Vector *vec, void *item, size_t index) {
+bool ssv_replace_at(ssv_vector_t *vec, void *item, size_t index) {
     if (!vec || index > vec->size) {
         return false;
     }
@@ -155,7 +155,7 @@ bool ssv_replace_at(ss_Vector *vec, void *item, size_t index) {
     return true;
 }
 
-size_t ssv_index_of(ss_Vector *vec, void *item) {
+size_t ssv_index_of(ssv_vector_t *vec, void *item) {
     if (vec == NULL || item == NULL) return SIZE_MAX;
 
     void *elem;
@@ -168,17 +168,17 @@ size_t ssv_index_of(ss_Vector *vec, void *item) {
     return SIZE_MAX;
 }
 
-void ssv_print(ss_Vector *vec, void (*print_elem) (void*)) {
+void ssv_print(ssv_vector_t *vec, void (*print_elem) (void*)) {
     for (size_t i = 0; i < vec->size; i++) {
         print_elem((char*) vec->array + (i * vec->memb_size));
     }
 }
 
-void ssv_sort(ss_Vector *vec, int (*compare)(const void*, const void*)) {
+void ssv_sort(ssv_vector_t *vec, int (*compare)(const void*, const void*)) {
     qsort(vec->array, vec->memb_size, vec->size, compare);
 }
 
-bool _internal_ssv_resize(ss_Vector *vec) {
+bool _internal_ssv_resize(ssv_vector_t *vec) {
     if (vec == NULL) return false;
     size_t new_size = vec->capacity * GROWTH_FACTOR;
 

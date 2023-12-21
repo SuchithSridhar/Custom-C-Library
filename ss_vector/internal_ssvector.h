@@ -6,6 +6,6 @@
 
 #define GROWTH_FACTOR 2
 
-bool _internal_ssv_resize(ss_Vector *vec);
+bool _internal_ssv_resize(ssv_vector_t *vec);
 
 #endif
