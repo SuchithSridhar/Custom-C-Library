@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -O3
 CSTD = c18
 TARGET = fileio
+LIB_DIR = suchilib
 
 # fPIC: Position Independent Code
 # shared: make a shared library
@@ -30,9 +31,12 @@ debug: lib$(TARGET).c ./test/testing.c
 test/lib_test: lib$(TARGET).o test/testing.c
 	$(CC) -o $@ --std=$(CSTD) lib$(TARGET).o ./test/testing.c
 
-test_shared: test/test.sh test/testing.c lib$(TARGET).so
-	$(CC) -o test/testing --std=$(CSTD) test/testing.c -L. -l$(TARGET)
-	LD_LIBRARY_PATH=$(CURRENT_DIR);${LD_LIBRARY_PATH} bash test/test.sh
+install: lib$(TARGET).so
+	sudo mkdir -p /usr/lib/$(LIB_DIR)
+	sudo mkdir -p /usr/include/$(LIB_DIR)
+
+	sudo cp lib$(TARGET).so /usr/lib/$(LIB_DIR)
+	sudo cp $(TARGET).h /usr/include/$(LIB_DIR)
 
 clean:
 	rm -f ./test/lib_test ./test/data/test*.out *.o *.so

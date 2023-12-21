@@ -208,6 +208,7 @@ fio_DataRead* fio_read_lines(FILE *stream) {
 
         data->lines[index] = string;
         data->str_lens[index] = length;
+        data->length++;
         index++;
     }
 
