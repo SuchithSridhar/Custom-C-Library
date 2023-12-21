@@ -5,7 +5,6 @@
 #include "ssvector.h"
 
 #define GROWTH_FACTOR 2
-#define SS_VECTOR_INITIAL_SIZE 32
 
 bool _internal_ssv_resize(ss_Vector *vec);
 

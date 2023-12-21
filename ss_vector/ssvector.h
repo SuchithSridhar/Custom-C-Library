@@ -21,7 +21,7 @@ typedef struct {
  * @param memb_size the size of each element.
  * @return A new vector allocated on the heap.
  */
-ss_Vector* ssv_init(size_t memb_size);
+ss_Vector* ssv_init(size_t memb_size, size_t init_size);
 
 /**
  * Destroy the vector and free its memory.
@@ -47,12 +47,28 @@ void* ssv_get(ss_Vector *vec, size_t index);
 bool ssv_push(ss_Vector *vec, void *item);
 
 /**
+ * Get an element from the end of the vector.
+ * @param vec the ss_Vector to operate on.
+ * @return a pointer within the vector to the element if exists, else NULL.
+ */
+void* ssv_peek(ss_Vector *vec);
+
+/**
  * Pop an element from the end of the vector.
  * The returned element needs to be freed.
  * @param vec the ss_Vector to operate on.
  * @return a pointer to the popped element (on heap), NULL if fails.
  */
 void* ssv_pop(ss_Vector *vec);
+
+/**
+ * Clear all the elements of the array.
+ * Note that this only updated the size
+ * and does not actually clear the array.
+ * @param vec the ss_Vector to clear.
+ * @return true if operation is successful, false otherwise.
+ */
+bool ssv_clear(ss_Vector *vec);
 
 /**
  * Delete an element from the end of the vector.
@@ -105,9 +121,16 @@ size_t ssv_index_of(ss_Vector *vec, void *item);
 
 /**
  * Print the elements inside the vector.
- * @param vec the ss_Vector to operator on.
+ * @param vec the ss_Vector to operate on.
  * @param print_elem a function pointer to print an element.
  */
 void ssv_print(ss_Vector *vec, void (*print_elem) (void*));
+
+/**
+ * Sort the vector based on the provided compare function.
+ * @param vec the ss_Vector to operate on.
+ * @param compare a function point to a function to compare two elements.
+ */
+void ssv_sort(ss_Vector *vec, int (*compare)(const void*, const void*));
 
 #endif

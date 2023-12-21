@@ -4,16 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-ss_Vector* ssv_init(size_t memb_size) {
+ss_Vector* ssv_init(size_t memb_size, size_t init_size) {
     ss_Vector *vec = malloc(sizeof(ss_Vector));
 
     if (vec == NULL) return NULL;
 
     vec->size = 0;
     vec->memb_size = memb_size;
-    vec->capacity = SS_VECTOR_INITIAL_SIZE;
+    vec->capacity = init_size;
 
-    vec->array = malloc(memb_size * SS_VECTOR_INITIAL_SIZE);
+    vec->array = malloc(memb_size * init_size);
     if (vec->array == NULL) {
         free(vec);
         return NULL;
@@ -34,6 +34,14 @@ bool ssv_destroy(ss_Vector *vec) {
 void* ssv_get(ss_Vector *vec, size_t index) {
     if (vec && index < vec->size) {
         return (void*)((char*)vec->array + (index * vec->memb_size));
+    }
+
+    return NULL;   
+}
+
+void* ssv_peek(ss_Vector *vec) {
+    if (vec && vec->size > 0) {
+        return (void*)((char*)vec->array + ((vec->size-1) * vec->memb_size));
     }
 
     return NULL;   
@@ -63,6 +71,12 @@ void* ssv_pop(ss_Vector *vec) {
     memcpy(elem, src, vec->memb_size);
     vec->size--;
     return elem;
+}
+
+bool ssv_clear(ss_Vector *vec) {
+    if (vec == NULL) return false;
+    vec->size = 0;
+    return true;
 }
 
 bool ssv_delete(ss_Vector *vec) {
@@ -158,6 +172,10 @@ void ssv_print(ss_Vector *vec, void (*print_elem) (void*)) {
     for (size_t i = 0; i < vec->size; i++) {
         print_elem((char*) vec->array + (i * vec->memb_size));
     }
+}
+
+void ssv_sort(ss_Vector *vec, int (*compare)(const void*, const void*)) {
+    qsort(vec->array, vec->memb_size, vec->size, compare);
 }
 
 bool _internal_ssv_resize(ss_Vector *vec) {
