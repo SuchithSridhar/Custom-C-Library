@@ -31,6 +31,49 @@ ssv_vector_t* ssv_init(size_t memb_size, size_t init_size);
 bool ssv_destroy(ssv_vector_t *vec);
 
 /**
+ * Reduces the capacity of the vector to match its current size, potentially
+ * freeing up unused memory.
+ * @param vec the ssv_vector_t to operate on.
+ * @return true if the operation is successful and memory is potentially freed,
+ * false otherwise.
+ */
+bool ssv_shrink_to_fit(ssv_vector_t *vec);
+
+/**
+ * Allocates memory to ensure the vector can hold at least a specified number of elements before needing to resize.
+ * This can be beneficial for performance when adding many elements to the vector.
+ * @param vec the ssv_vector_t to operate on.
+ * @param count the number of elements you want to reserve space for.
+ * @return true if the operation is successful and memory is reserved, false otherwise.
+ */
+bool ssv_reserve(ssv_vector_t *vec, size_t count);
+
+/**
+ * Creates and returns a new vector that is a copy of the provided vector. The elements are also copied.
+ * @param vec the ssv_vector_t to copy.
+ * @return a new vector that is a copy of the original vector, or NULL if the copy fails.
+ */
+ssv_vector_t* ssv_copy(ssv_vector_t *vec);
+
+/**
+ * Checks if the vector is empty (i.e., its size is 0).
+ * @param vec the ssv_vector_t to check.
+ * @return true if the vector is empty, false otherwise.
+ */
+bool ssv_is_empty(ssv_vector_t *vec);
+
+/**
+ * Deletes a range of elements from the vector, starting from the 'start' index
+ * up to, but not including, the 'end' index. This operation will shift any
+ * subsequent elements to fill the space created by the deleted elements.
+ * @param vec the ssv_vector_t to operate on.
+ * @param start the starting index of the range to delete.
+ * @param end the ending index of the range to delete (exclusive).
+ * @return the number of elements successfully deleted from the vector.
+ */
+size_t ssv_delete_range(ssv_vector_t *vec, size_t start, size_t end);
+
+/**
  * Get an element from the vector at a specified index.
  * @param vec the ssv_vector_t to operate on.
  * @param index the index of the element to be retrieved.

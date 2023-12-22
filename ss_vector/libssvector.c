@@ -32,6 +32,73 @@ bool ssv_destroy(ssv_vector_t *vec) {
     return true;
 }
 
+bool ssv_shrink_to_fit(ssv_vector_t *vec) {
+    if (vec == NULL) return false;
+
+    if (vec->size == vec->capacity) return true;
+
+    void *new_array = realloc(vec->array, vec->size * vec->memb_size);
+    if (new_array) {
+        vec->array = new_array;
+        vec->capacity = vec->size;
+        return true;
+    }
+    return false;
+}
+
+bool ssv_reserve(ssv_vector_t *vec, size_t count) {
+    if (vec == NULL) return false;
+    // Not allowed to reduce the capacity below size.
+    if (count <= vec->size) return false;
+    // We already have the required capacity.
+    if (count <= vec->capacity) return true;
+
+    void *new_array = realloc(vec->array, count * vec->memb_size);
+    if (new_array) {
+        vec->array = new_array;
+        vec->capacity = count;
+        return true;
+    }
+    return false;
+}
+
+ssv_vector_t* ssv_copy(ssv_vector_t *vec) {
+    if (vec == NULL) return NULL;
+
+    ssv_vector_t *new_vec = malloc(sizeof(ssv_vector_t));
+
+    if (!new_vec) return NULL;
+
+    new_vec->array = malloc(vec->capacity * vec->memb_size);
+    if (!new_vec->array) {
+        free(new_vec);
+        return NULL;
+    }
+
+    memcpy(new_vec->array, vec->array, vec->size * vec->memb_size);
+    new_vec->size = vec->size;
+    new_vec->capacity = vec->capacity;
+    new_vec->memb_size = vec->memb_size;
+    return new_vec;
+}
+
+bool ssv_is_empty(ssv_vector_t *vec) {
+    return vec && vec->size == 0;
+}
+
+size_t ssv_delete_range(ssv_vector_t *vec, size_t start, size_t end) {
+    if (!vec || start >= end || end > vec->size) {
+        return 0;
+    }
+    size_t range = end - start;
+    void *start_ptr = (char *)vec->array + start * vec->memb_size;
+    void *end_ptr = (char *)vec->array + end * vec->memb_size;
+    size_t move_count = vec->size - end;
+    memmove(start_ptr, end_ptr, move_count * vec->memb_size);
+    vec->size -= range;
+    return range;
+}
+
 void* ssv_get(ssv_vector_t *vec, size_t index) {
     if (vec && index < vec->size) {
         return (void*)((char*)vec->array + (index * vec->memb_size));
@@ -189,6 +256,13 @@ bool _internal_ssv_resize(ssv_vector_t *vec) {
 
     // Something went wrong. Overflow?
     if (new_size < vec->capacity) return false;
+
+    // Rounding cause the size to remain the same,
+    // it should increase at least by 1.
+    // This also accounts for if capacity is 0. It will update to be 1.
+    if (new_size == vec->capacity) {
+        new_size = new_size + 1;
+    }
 
     void *new_array = realloc(vec->array, new_size * vec->memb_size);
     if (new_array == NULL) return false;
