@@ -1,5 +1,6 @@
 #include "ssvector.h"
 #include "internal_ssvector.h"
+#include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -169,9 +170,13 @@ size_t ssv_index_of(ssv_vector_t *vec, void *item) {
 }
 
 void ssv_print(ssv_vector_t *vec, void (*print_elem) (void*)) {
-    for (size_t i = 0; i < vec->size; i++) {
+    printf("[");
+    for (size_t i = 0; i < vec->size - 1; i++) {
         print_elem((char*) vec->array + (i * vec->memb_size));
+        printf(", ");
     }
+    print_elem((char*) vec->array + ((vec->size - 1) * vec->memb_size));
+    printf("]\n");
 }
 
 void ssv_sort(ssv_vector_t *vec, int (*compare)(const void*, const void*)) {
